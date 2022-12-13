@@ -213,19 +213,19 @@
 "18 C:\UFC\2022.2\Microprocessadores\TrabalhosMicroprocessadores\Trabalho2\Trabalho2Micros.X\main.c
 [v _mediador mediador `ui  1 e 2 0 ]
 "19
-[v _j1 j1 `ui  1 e 2 0 ]
+[v _button1 button1 `ui  1 e 2 0 ]
 "20
-[v _j2 j2 `ui  1 e 2 0 ]
+[v _button2 button2 `ui  1 e 2 0 ]
 "28
-[v _contj1 contj1 `i  1 e 2 0 ]
+[v _temp_player1 temp_player1 `i  1 e 2 0 ]
 "29
-[v _contj2 contj2 `i  1 e 2 0 ]
+[v _temp_player2 temp_player2 `i  1 e 2 0 ]
 "31
 [v _main main `(v  1 e 1 0 ]
 {
-"65
-[v main@mostra mostra `i  1 a 2 28 ]
-"107
+"64
+[v main@print_tela print_tela `i  1 a 2 28 ]
+"105
 } 0
 "5 C:\Program Files\Microchip\xc8\v2.40\pic\sources\c99\common\printf.c
 [v _printf printf `(i  1 e 2 0 ]
@@ -407,7 +407,7 @@
 "109 C:\UFC\2022.2\Microprocessadores\TrabalhosMicroprocessadores\Trabalho2\Trabalho2Micros.X\main.c
 [v _isr isr `IIH(v  1 e 1 0 ]
 {
-"157
+"154
 } 0
 "36 C:\UFC\2022.2\Microprocessadores\TrabalhosMicroprocessadores\Trabalho2\Trabalho2Micros.X\lcd.c
 [v i2_limpa_lcd limpa_lcd `(v  1 e 1 0 ]

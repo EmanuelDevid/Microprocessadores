@@ -5886,30 +5886,30 @@ char *tempnam(const char *, const char *);
 #pragma config PBADEN = OFF
 #pragma config MCLRE = ON
 #pragma config LVP = OFF
-unsigned int mediador=0;
-unsigned int j1 = 0;
-unsigned int j2 = 0;
+unsigned int mediador = 0;
+unsigned int button1 = 0;
+unsigned int button2 = 0;
 
 
 void putch(char data)
 {
-  escreve_lcd(data);
+    escreve_lcd(data);
 }
 
- int contj1=0;
- int contj2=0;
+int temp_player1 = 0;
+int temp_player2 = 0;
 
 void main(void)
 {
     TRISBbits.TRISB0 = 1;
     TRISBbits.TRISB1 = 1;
- TRISBbits.TRISB2 = 1;
+    TRISBbits.TRISB2 = 1;
 
-    TRISAbits.RA3 = 0 ;
-    TRISAbits.RA0 = 0 ;
- TRISAbits.RA1 = 0 ;
- TRISAbits.RA2 = 0 ;
- TRISBbits.TRISB3 = 0;
+    TRISAbits.RA3 = 0;
+    TRISAbits.RA0 = 0;
+    TRISAbits.RA1 = 0;
+    TRISAbits.RA2 = 0;
+    TRISBbits.TRISB3 = 0;
 
     PORTD = 0;
     TRISD = 0x00;
@@ -5929,98 +5929,95 @@ void main(void)
     PEIE = 1;
     GIE = 1;
 
-
-     TMR2=0;
+    TMR2 = 0;
 
     T2CONbits.TMR2ON = 1;
-    int mostra=0;
+    int print_tela = 0;
 
-    while (1){
-        while(mediador==1){
-
-            if (TMR2IF) {
-            TMR2IF = 0;
-            if (j1 == 0)
-             contj1++;
-            if (j2 == 0)
-             contj2++;
-            }
-            if((j1==1)&&(j2==1)){
-                mediador=0;
-
-               if(contj1<contj2){
-                    PORTAbits.RA1=1;
-                }else if(contj1>contj2){
-                    PORTAbits.RA2=1;
-               }
-                mostra=1;
+    while (1)
+    {
+        while (mediador == 1)
+        {
+            if (TMR2IF){
+                TMR2IF = 0;
+                if (button1 == 0)
+                    temp_player1++;
+                if (button2 == 0)
+                    temp_player2++;
             }
 
+            if ((button1 == 1) && (button2 == 1)){
+                mediador = 0;
 
+                if(temp_player1 < temp_player2)
+                    PORTAbits.RA1 = 1;
 
+                else if(temp_player1 > temp_player2)
+                    PORTAbits.RA2 = 1;
+
+                print_tela = 1;
+            }
         }
 
-        while(mostra){
+        while (print_tela){
             inicializa_lcd();
             limpa_lcd();
-            caracter_inicio(1,1);
-             printf("TEMPO PLAYER1: = %d ms",contj1);
-              _delay((unsigned long)((250)*(4000000/4000.0)));
-               _delay((unsigned long)((250)*(4000000/4000.0)));
-             caracter_inicio(2,1);
-             printf("TEMPO PLAYER2: = %d ms",contj2);
-              _delay((unsigned long)((250)*(4000000/4000.0)));
-               _delay((unsigned long)((250)*(4000000/4000.0)));
-               mostra=0;
+            caracter_inicio(1, 1);
+            printf("TEMPO JOGADOR 1: = %d ms", temp_player1);
+            _delay((unsigned long)((250)*(4000000/4000.0)));
+            _delay((unsigned long)((250)*(4000000/4000.0)));
+            caracter_inicio(2, 1);
+            printf("TEMPO JOGADOR 2: = %d ms", temp_player2);
+            _delay((unsigned long)((250)*(4000000/4000.0)));
+            _delay((unsigned long)((250)*(4000000/4000.0)));
+            print_tela = 0;
         }
     }
-
 }
 
-void __attribute__((picinterrupt(("high_priority")))) isr() {
-    if (INT0IF) {
 
 
+void __attribute__((picinterrupt(("high_priority")))) isr()
+{
+    if (INT0IF){
+        if ((button1 == 0) && (button2 == 0)){
+            mediador = 1;
+            PORTAbits.RA3 = 1;
+            INT1IE = 1;
+            INT2IE = 1;
+            temp_player1 = 0;
+            temp_player2 = 0;
+            PORTAbits.RA0 = 1;
+            _delay((unsigned long)((500)*(4000000/4000.0)));
+            PORTAbits.RA0 = 0;
+            PORTAbits.RA3 = 0;
+        }
+        else if ((button1 == 1) && (button2 == 1)){
 
-        if((j1==0)&&(j2==0)){
-            mediador=1;
-            PORTAbits.RA3=1;
-           INT1IE=1;
-            INT2IE=1;
-            contj1 = 0;
-            contj2 = 0;
-            PORTAbits.RA0=1;
-             _delay((unsigned long)((500)*(4000000/4000.0)));
-             PORTAbits.RA0=0;
-             PORTAbits.RA3=0;
-        }else if((j1==1)&&(j2==1)){
-            mediador=0;
-            j1=0;
-            j2=0;
-            PORTAbits.RA1=0;
-            PORTAbits.RA2=0;
-            PORTAbits.RA3=0;
+            mediador = 0;
+            button1 = 0;
+            button2 = 0;
+            PORTAbits.RA1 = 0;
+            PORTAbits.RA2 = 0;
+            PORTAbits.RA3 = 0;
             limpa_lcd();
-
-
         }
 
         INT0IF = 0;
 
         return;
     }
-    if (INT1IF) {
 
 
-        j1=1;
-
-
+    if (INT1IF){
+        button1 = 1;
         INT1IF = 0;
         return;
     }
-    if(INT2IF){
-        j2=1;
 
+
+    if (INT2IF){
+        button2 = 1;
         INT2IF = 0;
         return;
     }
